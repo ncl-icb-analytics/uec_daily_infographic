@@ -17,18 +17,13 @@ from utils.global_params import *
 from utils.visualisation_functions import *
 from utils.network_management import *
 
-### Set which pipelines to run ###
-debug_run = {
-    "smart_api": True,
-    "las_handover": True,
-    "ecist_sitrep": False, #No Longer Used
-    "live_tracker": True
-}
-
 ### Load environment variables 
 config = toml.load("./config.toml")
 load_dotenv(override=True)
 site_id_map = pd.read_csv("./lookups/org_lookup.csv")
+
+### Load runtime settings
+env_runtime = import_settings(config, "runtime")
 
 ### Generate file for intermediate wrangle:
 
@@ -43,7 +38,7 @@ print()
 '''
 Pull from smart API
 '''
-if debug_run["smart_api"]:
+if env_runtime["DATA_PROCESSING_SMARTAPI"]:
     print("#########   Processing SMART API Pipeline   #########")
 
     ### Import settings from the .env file
@@ -120,7 +115,7 @@ if debug_run["smart_api"]:
 '''
 LAS import
 '''
-if debug_run["las_handover"]:
+if env_runtime["DATA_PROCESSING_LASHANDOVER"]:
 
     print("#########   Processing LAS Handover Pipeline   #########")
 
@@ -186,7 +181,7 @@ if debug_run["las_handover"]:
 '''
 ECIST SITREP
 '''
-if debug_run["ecist_sitrep"]:
+if False:
 
     print("#########   Processing ECIST Sitrep Pipeline   #########")
 
@@ -267,7 +262,7 @@ if debug_run["ecist_sitrep"]:
 '''
 Live Tracker
 '''
-if debug_run["live_tracker"]:
+if env_runtime["DATA_PROCESSING_LIVETRACKERS"]:
 
     print("#########   Processing Live Tracker Pipeline   #########")
 

@@ -5,10 +5,13 @@ sql_database = "Data_Lab_NCL_Dev"
 sql_schema = "JakeK"
 sql_cooloff = 60
 
+sql_table_prefix = "uec_daily"
+sql_table_suffix = "info_dev"
+
 [smart_api]
 
 [smart_api.base]
-sql_table = "uec_daily_smart"
+sql_table = "smart"
 api_url = "https://smart.nhs.uk/"
 sites = ["S0189179","S89CFECF","S818235B","SF06F50A","S48446E1","S12C3F7C"]
 #"S0189179" #Barnet Hospital
@@ -29,7 +32,7 @@ period = 5
 [las]
 
 [las.base]
-sql_table = "uec_daily_las"
+sql_table = "las"
 indicator_list = ['hospital_site','total_handover','over_15mins', 'over_30mins', 'over_45mins', 'over_60mins', 'over_120mins', 'over_180mins']
 archive_file = 1
 extract_number_of_days = 40
@@ -38,7 +41,7 @@ extract_number_of_days = 40
 [ecist_sitrep]
 
 [ecist_sitrep.base]
-sql_table = "uec_daily_ecist"
+sql_table = "ecist"
 indicator_list = ['ae_attendances','over12hoursfromarrival','extended_patients_occupied','g&acorebedsopen', 'number_of_discharges']
 indicator_list_full = ['accbedsoccupied', 'accbedsopen', 'ae_attendances', 'beds_occupied_by_long_stay_patients_14_plus_days', 'unavailablebedstrandedpatients', 'over12hoursfromarrival','extended_patients_occupied','g&acorebedsopen', 'g&atotalbedsoccupied', 'number_of_discharges']
 org_list = ['RAL','RAP','RRV','RKE']
@@ -54,17 +57,17 @@ archive_file = 1
 mo = "Daily Delay"
 mo_sheet_name = "NCL TOTAL"
 mo_table_heading = "Total by Hospital"
-mo_sql_table = "uec_daily_tracker_mo"
+mo_sql_table = "tracker_mo"
 mo_date_overwrite = ""
 
 [live_tracker.p2]
 p2 = "P2 Capacity"
 p2_sheet_name = "P2 Capacity"
-p2_sql_table = "uec_daily_tracker_p2"
+p2_sql_table = "tracker_p2"
 p2_date_overwrite = ""
 
 [live_tracker.vw]
 vw = "Virtual Ward"
 vw_sheet_name = "Historic System Value"
-vw_sql_table = "uec_daily_tracker_vw"
+vw_sql_table = "tracker_vw"
 
