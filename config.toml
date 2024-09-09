@@ -37,19 +37,6 @@ indicator_list = ['hospital_site','total_handover','over_15mins', 'over_30mins',
 archive_file = 1
 extract_number_of_days = 40
 
-
-[ecist_sitrep]
-
-[ecist_sitrep.base]
-sql_table = "ecist"
-indicator_list = ['ae_attendances','over12hoursfromarrival','extended_patients_occupied','g&acorebedsopen', 'number_of_discharges']
-indicator_list_full = ['accbedsoccupied', 'accbedsopen', 'ae_attendances', 'beds_occupied_by_long_stay_patients_14_plus_days', 'unavailablebedstrandedpatients', 'over12hoursfromarrival','extended_patients_occupied','g&acorebedsopen', 'g&atotalbedsoccupied', 'number_of_discharges']
-org_list = ['RAL','RAP','RRV','RKE']
-archive_file = 1
-
-[ecist_sitrep.date]
-date_range = 35
-
 [live_tracker]
 archive_file = 1
 

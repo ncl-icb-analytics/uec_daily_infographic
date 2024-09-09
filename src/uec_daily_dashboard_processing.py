@@ -178,86 +178,6 @@ if env_runtime["DATA_PROCESSING_LASHANDOVER"]:
                 print(f"Unable to archive las file as there is already a file with {date_end.strftime("%Y-%m-%d")} data in the archive folder.")
 
     print("\n")
-'''
-ECIST SITREP
-'''
-if False:
-
-    print("#########   Processing ECIST Sitrep Pipeline   #########")
-
-    ### Import settings from the .env file
-    env = import_settings(config, "ecist")
-
-    # Set parameters
-    DATE_RANGE = config["ecist_sitrep"]["date"]["date_range"]
-    INDICATOR_LIST = config["ecist_sitrep"]["base"]['indicator_list'] # import metric list
-    ORG_LIST = config["ecist_sitrep"]["base"]['org_list'] # import metric list
-    #Should the data file be archived on completion? (Set to False when debugging)
-    ARCHIVE_FILE = False
-
-    sitrep_file_path = getenv("NETWORKED_DATA_PATH_ECIST")
-
-    # Get the latest file
-    try:
-        filename = fetch_excel_file(sitrep_file_path, ext=".xlsb")
-    except Exception as e:
-        print(e)
-
-    else:
-        #The name of the sheet with the data on it
-        sheet_name = "New Raw Data"
-
-        new_sitrep_data = pd.read_excel(filename, sheet_name=sheet_name)
-        new_sitrep_data.rename(columns=clean_column_name, inplace=True)
-        new_sitrep_data.columns = map(str.lower, new_sitrep_data.columns)
-
-        # Filter data to relevant sites, indicators and time period
-        ## Date
-        new_sitrep_data["period"] = pd.to_datetime(new_sitrep_data["period"], origin="1899-12-30", unit="D")
-        new_sitrep_data['cutoff'] = pd.Timestamp(dtt.now()).date()-pd.to_timedelta(DATE_RANGE, unit='d')
-        new_sitrep_data = new_sitrep_data.query("period >= cutoff")
-        ## Site
-        new_sitrep_data = new_sitrep_data.query('orgcode in @ORG_LIST')
-        new_sitrep_data["orgcode"] = new_sitrep_data.apply(lambda x: x["site_code"] if x["orgcode"] == "RAL" else x["orgcode"], axis=1)
-        new_sitrep_data = new_sitrep_data.drop(['trust_name', 'site_name', 'site_code', 'stp_name','region_name'], axis=1) # site specific columns not needed 
-        ## Indicator
-        new_sitrep_data = new_sitrep_data.melt(id_vars = ['orgcode', 'period'], var_name='indicatorKeyName', value_name='value') # lengthen data to allow filter
-        new_sitrep_data = new_sitrep_data.query('indicatorKeyName in @INDICATOR_LIST') # filter metrics list
-        new_sitrep_data = new_sitrep_data[['period', 'orgcode','indicatorKeyName','value']].reset_index(drop=True) 
-
-        # Inter porcessing
-        new_sitrep_data.rename(columns={'period': 'date_data', 'orgcode': 'provider_code'},  inplace=True)
-        new_sitrep_data = new_sitrep_data[['indicatorKeyName', 'provider_code', 'date_data', 'value']]
-        new_sitrep_data = new_sitrep_data.groupby(['date_data', 'provider_code', 'indicatorKeyName'])['value'].sum().reset_index()
-        new_sitrep_data = new_sitrep_data.drop_duplicates()
-        new_sitrep_data['source'] = 'ecist_sitrep'
-        new_sitrep_data['metric_type'] = 'actual'
-
-        new_sitrep_data = new_sitrep_data[['source', 'indicatorKeyName', 'provider_code', 'date_data', 'metric_type', 'value']]
-        new_sitrep_data.to_csv('inter.csv', mode='a', index=False, header=False)
-
-        ## Sandpit upload
-        # reshape for sandpit
-        new_sitrep_data = new_sitrep_data.drop(['source', 'metric_type'], axis=1).reset_index(drop=True)
-        new_sitrep_data = new_sitrep_data.pivot(index=['date_data', 'provider_code'], columns='indicatorKeyName', values='value').reset_index()
-        new_sitrep_data = new_sitrep_data.rename_axis(None, axis = 1)
-
-        date_end = new_sitrep_data.max().iloc[0].date()
-        date_start = new_sitrep_data.min().iloc[0].date()
-
-        # upload to sandpit - once suficiently generalised
-        query_del = get_delete_query(date_start, date_end, ["RAL01", "RAL26", "RALC7", "RAP", "RKE", "RRV"], env)
-
-        upload_request_data(new_sitrep_data, query_del, env)
-        print(f"Upload successful for ecist")
-
-        if env["ARCHIVE_ECIST"]:
-            try:
-                archive_data_file(filename, sitrep_file_path, "ecist_sitrep", date_end.strftime("%Y-%m-%d"), ext=".xlsb")
-            except FileExistsError:
-                print(f"Unable to archive ecist file as there is already a file with {date_end.strftime("%Y-%m-%d")} data in the archive folder.")
-
-    print("\n")
 
 '''
 Live Tracker
@@ -283,4 +203,4 @@ if env_runtime["DATA_PROCESSING_LIVETRACKERS"]:
         else:
             ef_controller(ds, env, new_data_files[ds])
 
-    print("\n")     
+    print("\n")
