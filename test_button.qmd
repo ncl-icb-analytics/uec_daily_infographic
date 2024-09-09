@@ -1,0 +1,57 @@
+---
+title: "Interactive Visuals with Dropdown"
+format: dashboard
+---
+
+# Swap between visuals using a dropdown
+
+This example demonstrates how you can use a dropdown menu to switch between two different visuals on the same page.
+
+<!-- Dropdown list -->
+<select id="visualDropdown" onchange="swapVisuals()">
+  <option value="chart1">Sine Wave</option>
+  <option value="chart2">Cosine Wave</option>
+</select>
+
+<!-- Div containers for visuals -->
+<div id="chart1">
+```{python}
+#| echo: false
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.linspace(0, 10, 100)
+y = np.sin(x)
+
+plt.plot(x, y)
+plt.title("Sine Wave")
+plt.show()
+```
+
+</div> 
+<div id="chart2" style="display:none;"> 
+```{python} 
+#| echo: false 
+x = np.linspace(0, 10, 100) 
+y = np.cos(x)
+
+plt.plot(x, y) 
+plt.title("Cosine Wave") 
+plt.show()
+```
+
+</div>
+
+<script>
+function swapVisuals() {
+  var selectedValue = document.getElementById("visualDropdown").value;
+  
+  if (selectedValue === "chart1") {
+    document.getElementById('chart1').style.display = 'block';
+    document.getElementById('chart2').style.display = 'none';
+  } else if (selectedValue === "chart2") {
+    document.getElementById('chart1').style.display = 'none';
+    document.getElementById('chart2').style.display = 'block';
+  }
+}
+</script>
