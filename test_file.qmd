@@ -1,0 +1,111 @@
+---
+title: "matplotlib demo"
+format:
+  dashboard:
+    code-fold: true
+    embed-resources: true
+    scrolling: false 
+
+    logo: assets/images/ICS_Star.png
+jupyter: python3
+---
+
+
+<!-- Import python modules -->
+```{python}
+#| echo: false
+import numpy as np
+import matplotlib.pyplot as plt
+```
+## Row {.flow}
+
+<!-- Dropdown list -->
+<select id="visualDropdown" onchange="swapVisuals()">
+  <option value="chart1">Sine Wave</option>
+  <option value="chart2">Cosine Wave</option>
+</select>
+
+## Row {.flow}
+
+```{python}
+#| content: valuebox
+#| title: "OPEL Rating"
+#| colour: sucess
+dict(
+  value = 5
+)
+```
+
+```{python}
+#| content: valuebox
+#| title: "4 Hour Performance"
+#| colour: sucess
+dict(
+  value = "20%"
+)
+```
+
+```{python}
+#| content: valuebox
+#| title: "Ambulance Handover 2 Hours"
+dict(
+  value = 0.5
+)
+```
+
+## Row {.flow}
+```{python}
+#| echo: false
+x = np.linspace(0, 10, 100) 
+y = np.cos(x)
+
+plt.figure()
+plt.plot(x, y) 
+plt.title("Cosine Wave3"); 
+plt.show()
+```
+
+## Row {height = 40%}
+
+<!-- Div for charts -->
+<div id="chart1">
+```{python}
+#| echo: false
+x = np.linspace(0, 10, 100)
+y = np.sin(x)
+
+plt.figure()
+plt.plot(x, y)
+plt.title("Sine Wave")
+plt.show()
+```
+
+</div> 
+
+<div id="chart2" style="display:none;"> 
+```{python}
+#| echo: false
+x = np.linspace(0, 10, 100) 
+y = np.cos(x)
+
+plt.figure()
+plt.plot(x, y) 
+plt.title("Cosine Wave") 
+plt.show()
+```
+
+</div>
+
+<script>
+function swapVisuals() {
+  var selectedValue = document.getElementById("visualDropdown").value;
+  
+  if (selectedValue === "chart1") {
+    document.getElementById('chart1').style.display = 'block';
+    document.getElementById('chart2').style.display = 'none';
+  } else if (selectedValue === "chart2") {
+    document.getElementById('chart1').style.display = 'none';
+    document.getElementById('chart2').style.display = 'block';
+  }
+}
+</script>
